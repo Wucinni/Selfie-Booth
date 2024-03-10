@@ -4,6 +4,7 @@ import settings
 
 
 app = Flask(__name__, static_folder='templates')
+settings.set_default_settings()
 path = settings.get_videos_folder()
 
 

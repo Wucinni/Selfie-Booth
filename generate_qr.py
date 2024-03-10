@@ -1,8 +1,9 @@
+from PIL import Image, ImageDraw, ImageFont
 import wifi_qrcode_generator.generator
 import qrcode
 
 
-def generate_qr_code(text=None):
+def generate_qr_code(text=None, tag="VIDEO"):
     qr_code = qrcode.QRCode(
         version=None,
         error_correction=qrcode.constants.ERROR_CORRECT_L,

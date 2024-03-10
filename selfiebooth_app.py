@@ -18,58 +18,59 @@ width_constant = 0.46875
 changed_video_location_status = False
 
 
-def check_fullscreen():
-    global fullscreen_status
-    if fullscreen_status:
-        root.attributes('-fullscreen', True)
-
-    else:
-        root.attributes('-fullscreen', False)
-    root.after(50, check_fullscreen)
+def make_window_fullscreen():
+    root.attributes('-fullscreen', True) if fullscreen_status else root.attributes('-fullscreen', False)
+    root.after(50, make_window_fullscreen)
 
 
-def fullscreen():
+def set_fullscreen_variable():
     global fullscreen_status
     while True:
         keyboard.wait("x")
 
         if not fullscreen_status:
             fullscreen_status = True
-            emptyMenu = Menu(root)
-            root.config(menu=emptyMenu)
-            print("Fullscreen")
+            empty_menu = Menu(root)
+            root.config(menu=empty_menu)
         else:
             fullscreen_status = False
-            print("Windowed")
             root.config(menu=menubar)
 
 
-def video():
+def play_video():
     global changed_video_location_status
     while True:
         path = settings.get_videos_folder()
         files = os.listdir(path)
         video_files = [file for file in files if file.lower().endswith(('.mp4', '.avi', '.mkv'))]
         video_files.sort(key=lambda x: os.path.getmtime(os.path.join(path, x)), reverse=True)
-        latest_video = None
-        frame_data = None
 
         latest_video = video_files[0]
         frame_data = imageio.get_reader(path + "/" + latest_video)
+        frame_rate = frame_data.get_meta_data()['fps']  # Get the original frame rate of the video
 
+        video_clip = VideoFileClip(path + "/" + latest_video)
+        audio_clip = video_clip.audio
+        audio_thread = Thread(target=audio_clip.preview)
 
         if frame_data is not None:
             if audio_state == "On":
-                video_clip = VideoFileClip(path + "/" + latest_video)
-                audio_clip = video_clip.audio
-                audio_thread = Thread(target=audio_clip.preview)
-                audio_thread.daemon = 1
+                audio_thread.daemon = True
                 audio_thread.start()
 
-            for frame in frame_data.iter_data():
+            start_time = time.time()  # Get the start time
+            for frame_number, frame in enumerate(frame_data.iter_data()):
                 if changed_video_location_status:
                     changed_video_location_status = False
                     break
+
+                frame_time = frame_number / frame_rate  # Calculate the time stamp of the frame
+                elapsed_time = time.time() - start_time  # Calculate the elapsed time
+                remaining_time = frame_time - elapsed_time  # Calculate the remaining time until the frame should be displayed
+
+                if remaining_time > 0:
+                    time.sleep(remaining_time)  # Wait until it's time to display the frame
+
                 frame_image = ImageTk.PhotoImage(Image.fromarray(frame).resize((int(root.winfo_width() * width_constant), root.winfo_height())))
                 middle_container.config(image=frame_image)
                 middle_container.image = frame_image
@@ -108,21 +109,58 @@ def set_videos_location():
     if len(videos_directory) > 0:
         settings.set_videos_folder(videos_directory)
     if not render_video_thread.is_alive():
-        render_video_thread = Thread(target=video)
+        render_video_thread = Thread(target=play_video)
         render_video_thread.daemon = 1
         render_video_thread.start()
     changed_video_location_status = True
 
 
-def save_wifi_credentials():
-    settings.set_wifi_ssid(wifi_ssid.get())
-    settings.set_wifi_password(wifi_password.get())
+def save_wifi_credentials(wifi_input_box, ssid, password):
+    settings.set_wifi_ssid(ssid)
+    settings.set_wifi_password(password)
     wifi_input_box.destroy()
     messagebox.showinfo(title="Confirmation Box", message="Wifi credentials saved")
 
 
+def save_ip(ip_input_box, ip):
+    settings.set_server_ip(ip)
+    ip_input_box.destroy()
+    messagebox.showinfo(title="Confirmation Box", message="IP saved")
+
+def set_local_ip():
+    ip_input_box = tk.Toplevel(root)
+    ip_input_box.title("Enter local IP")
+
+    ip_label = tk.Label(ip_input_box, text="IP:")
+    ip_label.pack()
+    ip_ssid = tk.Entry(ip_input_box)
+    ip_ssid.pack()
+
+    save_button = tk.Button(ip_input_box, text="Save",
+                            command=lambda: save_ip(ip_input_box, ip_ssid.get()))
+    save_button.pack()
+
+
+def save_port(port_input_box, port):
+    settings.set_server_port(port)
+    port_input_box.destroy()
+    messagebox.showinfo(title="Confirmation Box", message="Port saved")
+
+def set_port():
+    port_input_box = tk.Toplevel(root)
+    port_input_box.title("Enter port")
+
+    port_label = tk.Label(port_input_box, text="Port:")
+    port_label.pack()
+    port_ssid = tk.Entry(port_input_box)
+    port_ssid.pack()
+
+    save_button = tk.Button(port_input_box, text="Save",
+                            command=lambda: save_port(port_input_box, port_ssid.get()))
+    save_button.pack()
+
+
 def set_wifi_credentials():
-    global wifi_ssid, wifi_password, wifi_input_box
     wifi_input_box = tk.Toplevel(root)
     wifi_input_box.title("Wifi Credentials")
 
@@ -136,7 +174,8 @@ def set_wifi_credentials():
     wifi_password = tk.Entry(wifi_input_box)
     wifi_password.pack()
 
-    save_button = tk.Button(wifi_input_box, text="Save", command=save_wifi_credentials)
+    save_button = tk.Button(wifi_input_box, text="Save",
+                            command=lambda: save_wifi_credentials(wifi_input_box, wifi_ssid.get(), wifi_password.get()))
     save_button.pack()
 
 
@@ -151,7 +190,7 @@ def change_audio_state():
 
 
 
-audio_state = "On"
+audio_state = "Off"
 # Submenu
 menubar = Menu(root)
 menu = Menu(menubar, tearoff=0)
@@ -161,6 +200,8 @@ menubar.add_cascade(label="Menu", menu=menu)
 menu.add_cascade(label="Server", menu=server_menu)
 
 server_menu.add_command(label="Start Server", command=start_server_thread)
+server_menu.add_command(label="Save IP", command=set_local_ip)
+server_menu.add_command(label="Save Port", command=set_port)
 menu.add_command(label="Video Directory", command=set_videos_location)
 menu.add_command(label="Wifi", command=set_wifi_credentials)
 menu.add_command(label=f"Audio: {audio_state}", command=change_audio_state)
@@ -191,14 +232,14 @@ right_container.config(image=right_qr)
 
 
 # Threads
-render_video_thread = Thread(target=video)
+render_video_thread = Thread(target=play_video)
 render_video_thread.daemon = 1
 render_video_thread.start()
 
-fullscreen_thread = Thread(target=fullscreen)
+fullscreen_thread = Thread(target=set_fullscreen_variable)
 fullscreen_thread.daemon = 1
 fullscreen_thread.start()
 
-check_fullscreen()
+make_window_fullscreen()
 
 root.mainloop()

@@ -1,4 +1,5 @@
 import tkinter as tk
+import time
 from tkinter import *
 from tkinter import ttk, messagebox, filedialog
 import imageio
@@ -10,6 +11,7 @@ import numpy as np
 import os
 import settings
 import flask_server
+from moviepy.editor import VideoFileClip
 
 fullscreen_status = False
 width_constant = 0.46875
@@ -57,6 +59,13 @@ def video():
 
 
         if frame_data is not None:
+            if audio_state == "On":
+                video_clip = VideoFileClip(path + "/" + latest_video)
+                audio_clip = video_clip.audio
+                audio_thread = Thread(target=audio_clip.preview)
+                audio_thread.daemon = 1
+                audio_thread.start()
+
             for frame in frame_data.iter_data():
                 if changed_video_location_status:
                     changed_video_location_status = False
@@ -96,7 +105,8 @@ def start_server_thread():
 def set_videos_location():
     global render_video_thread, changed_video_location_status
     videos_directory = filedialog.askdirectory()
-    settings.set_videos_folder(videos_directory)
+    if len(videos_directory) > 0:
+        settings.set_videos_folder(videos_directory)
     if not render_video_thread.is_alive():
         render_video_thread = Thread(target=video)
         render_video_thread.daemon = 1
@@ -130,13 +140,31 @@ def set_wifi_credentials():
     save_button.pack()
 
 
+def change_audio_state():
+    global audio_state
+    if audio_state == "On":
+        audio_state = "Off"
+    elif audio_state == "Off":
+        audio_state = "On"
+
+    menu.entryconfigure(3, label=f"Audio: {audio_state}")
+
+
+
+audio_state = "On"
 # Submenu
 menubar = Menu(root)
-filemenu = Menu(menubar, tearoff=0)
-filemenu.add_command(label="Start Server", command=start_server_thread)
-filemenu.add_command(label="Video Directory", command=set_videos_location)
-filemenu.add_command(label="Wifi", command=set_wifi_credentials)
-menubar.add_cascade(label="Menu", menu=filemenu)
+menu = Menu(menubar, tearoff=0)
+server_menu = Menu(menu, tearoff=0)
+
+menubar.add_cascade(label="Menu", menu=menu)
+menu.add_cascade(label="Server", menu=server_menu)
+
+server_menu.add_command(label="Start Server", command=start_server_thread)
+menu.add_command(label="Video Directory", command=set_videos_location)
+menu.add_command(label="Wifi", command=set_wifi_credentials)
+menu.add_command(label=f"Audio: {audio_state}", command=change_audio_state)
+
 root.config(menu=menubar)
 
 # Background
@@ -174,5 +202,3 @@ fullscreen_thread.start()
 check_fullscreen()
 
 root.mainloop()
-
-

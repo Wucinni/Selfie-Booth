@@ -77,13 +77,14 @@ def play_video():
 
                 qr_size = int(0.3 * root.winfo_width() * width_constant)
 
-                qr_frame_left = ImageTk.PhotoImage(Image.fromarray(np.array(generate_qr.generate_qr_code(f"http://{settings.get_server_ip()}:{settings.get_server_port()}"))).resize((qr_size, qr_size), resample=Image.LANCZOS))
-                left_container.config(image=qr_frame_left)
-                left_container.image = qr_frame_left
-
-                qr_frame_right = ImageTk.PhotoImage(Image.fromarray(np.array(generate_qr.generate_qr_wifi(settings.get_wifi_ssid(), settings.get_wifi_password()))).resize((qr_size, qr_size), resample=Image.LANCZOS))
+                qr_frame_right = ImageTk.PhotoImage(Image.fromarray(np.array(generate_qr.generate_qr_code(f"http://{settings.get_server_ip()}:{settings.get_server_port()}"))).resize((qr_size, qr_size), resample=Image.LANCZOS))
                 right_container.config(image=qr_frame_right)
                 right_container.image = qr_frame_right
+
+                qr_frame_left = ImageTk.PhotoImage(Image.fromarray(np.array(generate_qr.generate_qr_wifi(settings.get_wifi_ssid(), settings.get_wifi_password()))).resize((qr_size, qr_size), resample=Image.LANCZOS))
+                left_container.config(image=qr_frame_left)
+                left_container.image = qr_frame_left
+            print(time.time() - start_time)
 
 
 settings.set_default_settings()

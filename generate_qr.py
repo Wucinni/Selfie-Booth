@@ -1,23 +1,11 @@
 from PIL import Image, ImageDraw, ImageFont
 import wifi_qrcode_generator.generator
 import qrcode
+import os
 
 
-def generate_qr_code2(text=None, tag="VIDEO"):
-    qr_code = qrcode.QRCode(
-        version=None,
-        error_correction=qrcode.constants.ERROR_CORRECT_L,
-        box_size=10,
-        border=4,
-    )
-
-    qr_code.add_data(text)
-    qr_code.make(fit=True)
-    # qr_code_image = qr_code.make_image(fill_color="black", back_color="white")
-    qr_code_image = qr_code.make_image(fill_color="black", back_color="white")
-    # 255 213 129
-
-    return qr_code_image
+filename = os.path.basename(__file__)
+path = os.path.abspath(__file__)
 
 
 def generate_qr_wifi(ssid=None, password=None):
@@ -33,60 +21,56 @@ def generate_qr_wifi(ssid=None, password=None):
     return qr_code.make_image()
 
 
-def generate_qr_code3(text=None, background_image_path="C:\\Users\Dennis\PycharmProjects\Selfie-Booth\\templates\\background_qr_right.png"):
-    # Generate QR code with white background
+def generate_qr_code(text=None):
+    # Create QR Object
     qr_code = qrcode.QRCode(
         version=None,
         error_correction=qrcode.constants.ERROR_CORRECT_L,
         box_size=10,
         border=4,
     )
+
     qr_code.add_data(text)
     qr_code.make(fit=True)
-    qr_code_image = qr_code.make_image(fill_color="white", back_color="black")  # Black QR code on white background
 
-    # Load background image
-    background = Image.open(background_image_path)
+    # Create QR Images from QR Objects
+    qr_code_image = qr_code.make_image(fill_color="black", back_color="white")
+    modified_qr_code_image = qr_code.make_image(fill_color="white", back_color="black")
 
-    # Resize background image to fit QR code
-    qr_code_size = qr_code_image.size
-    background = background.resize(qr_code_size)
+    # Load background image and resize to fit QR
+    background = Image.open(path[:len(path) - len(filename)] + "templates\\background_qr_right.png")
+    qr_code_size = modified_qr_code_image.size
+    resized_background = background.resize(qr_code_size)
 
     # Convert QR code image to RGBA mode to ensure transparency
-    qr_code_image_rgba = qr_code_image.convert("RGBA")
+    qr_code_image_rgba = modified_qr_code_image.convert("RGBA")
 
-    # Create a mask to identify white pixels in the QR code
-    mask = qr_code_image.convert("L")
+    # Create mask to find white pixels in QR
+    mask = modified_qr_code_image.convert("L")
     mask = Image.eval(mask, lambda px: 255 if px == 255 else 0)
 
     # Paste QR code onto background image with transparency
-    background.paste(qr_code_image_rgba, (0, 0), mask)
+    resized_background.paste(qr_code_image_rgba, (0, 0), mask)
 
-    return background
-
-def generate_qr_code(text = None, tag = None):
-    # generate_qr_code2().show()
-    image1 = generate_qr_code2(text).convert("RGB")
-    image2 = generate_qr_code3(text).convert("RGB")
+    qr_code_image = qr_code_image.convert("RGB")
+    modified_qr_code_image = resized_background.convert("RGB")
 
     # Get pixel data from both images
-    pixels1 = image1.load()
-    pixels2 = image2.load()
+    pixels_qr = qr_code_image.load()
+    pixels_modified_qr = modified_qr_code_image.load()
 
     # Ensure both images have the same size
-    if image1.size != image2.size:
-        image1 = image1.resize(image2.size)
+    if qr_code_image.size != modified_qr_code_image.size:
+        qr_code_image = qr_code_image.resize(modified_qr_code_image.size)
 
     # Iterate through each pixel of the first image
-    for x in range(image1.width):
-        for y in range(image1.height):
+    for pixel_x_position in range(qr_code_image.width):
+        for pixel_y_position in range(qr_code_image.height):
             # Get the RGB values of the pixel
-            r, g, b = pixels1[x, y]
+            r, g, b = pixels_qr[pixel_x_position, pixel_y_position]
             # If the pixel in the first image is black, paste it onto the second image
             if r == g == b == 0:
-                pixels2[x, y] = (0, 0, 0)  # Set the corresponding pixel in the second image to black
+                pixels_modified_qr[pixel_x_position, pixel_y_position] = (0, 0, 0)  # Set the corresponding pixel in the second image to black
 
-    # image2.show()
-    return image2
-
-    # Now you can continue using image1 and image2 as modified variables in your code
+    # modified_qr_code_image.show()
+    return modified_qr_code_image

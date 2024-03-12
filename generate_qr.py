@@ -8,37 +8,9 @@ filename = os.path.basename(__file__)
 path = os.path.abspath(__file__)
 
 
-def generate_qr_wifi(ssid=None, password=None):
-    if password is not None:
-        qr_code = wifi_qrcode_generator.generator.wifi_qrcode(
-            ssid=ssid, hidden=False, authentication_type='WPA', password=password
-        )
-    else:
-        qr_code = wifi_qrcode_generator.generator.wifi_qrcode(
-            ssid=ssid, hidden=False, authentication_type='nopass', password=None
-        )
-
-    return qr_code.make_image()
-
-
-def generate_qr_code(text=None):
-    # Create QR Object
-    qr_code = qrcode.QRCode(
-        version=None,
-        error_correction=qrcode.constants.ERROR_CORRECT_L,
-        box_size=10,
-        border=4,
-    )
-
-    qr_code.add_data(text)
-    qr_code.make(fit=True)
-
-    # Create QR Images from QR Objects
-    qr_code_image = qr_code.make_image(fill_color="black", back_color="white")
-    modified_qr_code_image = qr_code.make_image(fill_color="white", back_color="black")
-
+def set_qr_background(qr_code_image, modified_qr_code_image, background):
     # Load background image and resize to fit QR
-    background = Image.open(path[:len(path) - len(filename)] + "templates\\background_qr_right.png")
+    background = Image.open(background)
     qr_code_size = modified_qr_code_image.size
     resized_background = background.resize(qr_code_size)
 
@@ -70,7 +42,32 @@ def generate_qr_code(text=None):
             r, g, b = pixels_qr[pixel_x_position, pixel_y_position]
             # If the pixel in the first image is black, paste it onto the second image
             if r == g == b == 0:
-                pixels_modified_qr[pixel_x_position, pixel_y_position] = (0, 0, 0)  # Set the corresponding pixel in the second image to black
+                pixels_modified_qr[pixel_x_position, pixel_y_position] = (
+                0, 0, 0)  # Set the corresponding pixel in the second image to black
 
-    # modified_qr_code_image.show()
     return modified_qr_code_image
+
+def qr(ssid=None, password=None, text=None):
+    if text:
+        background = path[:len(path) - len(filename)] + "templates\\background_qr_right.png"
+        qr_code = qrcode.QRCode(
+            version=None,
+            error_correction=qrcode.constants.ERROR_CORRECT_L,
+            box_size=10,
+            border=4,
+        )
+
+        qr_code.add_data(text)
+        qr_code.make(fit=True)
+    elif ssid:
+        background = path[:len(path) - len(filename)] + "templates\\background_qr_left.png"
+        if password:
+            qr_code = wifi_qrcode_generator.generator.wifi_qrcode(
+                ssid=ssid, hidden=False, authentication_type='WPA', password=password
+            )
+        else:
+            qr_code = wifi_qrcode_generator.generator.wifi_qrcode(
+                ssid=ssid, hidden=False, authentication_type='nopass', password=None
+            )
+
+    return set_qr_background(qr_code.make_image(fill_color="black", back_color="white"), qr_code.make_image(fill_color="white", back_color="black"), background)

@@ -26,7 +26,7 @@ def make_window_fullscreen():
 def set_fullscreen_variable():
     global fullscreen_status
     while True:
-        keyboard.wait("x")
+        keyboard.wait("f12")
 
         if not fullscreen_status:
             fullscreen_status = True
@@ -53,6 +53,18 @@ def play_video():
         audio_clip = video_clip.audio
         audio_thread = Thread(target=audio_clip.preview)
 
+        qr_size = int(0.3 * root.winfo_width() * width_constant)
+
+        qr_frame_right = ImageTk.PhotoImage(Image.fromarray(
+            np.array(generate_qr.qr(text=f"http://{settings.get_server_ip()}:{settings.get_server_port()}"))).resize(
+            (qr_size, qr_size),
+            resample=Image.LANCZOS))
+
+        qr_frame_left = ImageTk.PhotoImage(Image.fromarray(
+            np.array(
+                generate_qr.qr(ssid=settings.get_wifi_ssid(), password=settings.get_wifi_password()))).resize(
+            (qr_size, qr_size), resample=Image.LANCZOS))
+
         if frame_data is not None:
             if audio_state == "On":
                 audio_thread.daemon = True
@@ -75,16 +87,11 @@ def play_video():
                 middle_container.config(image=frame_image)
                 middle_container.image = frame_image
 
-                qr_size = int(0.3 * root.winfo_width() * width_constant)
-
-                qr_frame_right = ImageTk.PhotoImage(Image.fromarray(np.array(generate_qr.generate_qr_code(f"http://{settings.get_server_ip()}:{settings.get_server_port()}"))).resize((qr_size, qr_size), resample=Image.LANCZOS))
                 right_container.config(image=qr_frame_right)
                 right_container.image = qr_frame_right
 
-                qr_frame_left = ImageTk.PhotoImage(Image.fromarray(np.array(generate_qr.generate_qr_wifi(settings.get_wifi_ssid(), settings.get_wifi_password()))).resize((qr_size, qr_size), resample=Image.LANCZOS))
                 left_container.config(image=qr_frame_left)
                 left_container.image = qr_frame_left
-            print(time.time() - start_time)
 
 
 settings.set_default_settings()
@@ -220,7 +227,7 @@ background_label.place(x=0, y=0, relwidth=1, relheight=1)
 # Containers
 left_container = ttk.Label(root)
 left_container.pack(side="left", expand=True,  padx=10)
-left_qr = ImageTk.PhotoImage(generate_qr.generate_qr_wifi(settings.get_wifi_ssid(), settings.get_wifi_password()))
+left_qr = ImageTk.PhotoImage(generate_qr.qr(ssid=settings.get_wifi_ssid(), password=settings.get_wifi_password()))
 left_container.config(image=left_qr)
 
 middle_container = ttk.Label(root)
@@ -228,7 +235,7 @@ middle_container.pack(side="left", expand=True, padx=10)
 
 right_container = ttk.Label(root)
 right_container.pack(side="left", expand=True,  padx=10)
-right_qr = ImageTk.PhotoImage(generate_qr.generate_qr_code(f"http://{settings.get_server_ip()}:{settings.get_server_port()}"))
+right_qr = ImageTk.PhotoImage(generate_qr.qr(text=f"http://{settings.get_server_ip()}:{settings.get_server_port()}"))
 right_container.config(image=right_qr)
 
 

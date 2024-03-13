@@ -61,6 +61,32 @@ def video():
     return render_template('landing.html', index=0)
 
 
+@app.route('/upload/', methods=['GET', 'POST'])
+def upload_file():
+    if request.method == 'POST':
+        file = request.files['file']
+
+        if file.filename == '':
+            return 'No selected file'
+
+        UPLOAD_FOLDER = settings.get_videos_folder() + "/"
+        app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+        file.save(os.path.join(app.config['UPLOAD_FOLDER'], file.filename))
+
+        return 'File uploaded successfully'
+
+    # Display a simple form for file upload
+    return '''
+        <!doctype html>
+        <title>Upload File</title>
+        <h2>Upload a File</h2>
+        <form method="post" enctype="multipart/form-data">
+        <input type="file" name="file">
+        <input type="submit" value="Upload">
+        </form>
+    '''
+
+
 @app.route('/')
 def greeting():
     return render_template('landing.html', index=0)

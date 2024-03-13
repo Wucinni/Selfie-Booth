@@ -1,1 +1,1 @@
-![](README_Assets/m2logo.png)
+![](README_Assets/selfie_booth_logo.png)

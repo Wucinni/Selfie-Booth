@@ -35,7 +35,6 @@ You will need the latest Python version available, preferably 3.10 which this bo
 
 - Video display is set by default to the user Desktop.
 - In case the application fails to display the video: select again the directory using the top left menu and reopen the application
-- 
 :warning: Application works only with '.mp4', '.avi', '.mkv' files.
 
 ## Flask Server

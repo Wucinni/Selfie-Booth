@@ -51,7 +51,7 @@ You will need the latest Python version available, preferably 3.10 which this bo
 
 ## Fullscreen
 
-Make Desktop GUI Fulscreen by pressing F12. If necessary to change: modify line 54 in selfiebooth_app.py
+Make Desktop GUI Fulscreen by pressing F12. If necessary to change: modify line 56 in selfiebooth_app.py
 
 # Gallery
 

@@ -28,9 +28,8 @@ You will need the latest Python version available, preferably 3.10 which this bo
 
 - Application background can be changed by replacing background.png from templates folder.
 - By replacing the background you have to cut specific areas from the image for QRs in order to change their backgrounds. QRs have their own background in the templates folder. Just use Snipping Tool and cut where the QRs would be.
-<details>
+  
 :warning: Do not rename the file, standard name is 'background.png' otherwise fails may appear.
-</details>
 
 ## Video Display
 

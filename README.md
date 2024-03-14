@@ -54,8 +54,9 @@ Desktop GUI:
 
 <video src="https://raw.githubusercontent.com/Wucinni/Selfie-Booth/development/.github/images/demo.mp4" width="300" />
 
-https://raw.githubusercontent.com/Wucinni/Selfie-Booth/development}/.github/images/demo.mp4
+<video src="https://github.com/Wucinni/Selfie-Booth/assets/57183275/ef9b0c01-f095-4e05-a8fd-86c00abe5fc9" width="300" />
 
+https://github.com/Wucinni/Selfie-Booth/assets/57183275/ef9b0c01-f095-4e05-a8fd-86c00abe5fc9
 
 
 https://github.com/Wucinni/Selfie-Booth/assets/57183275/4b29cfc5-4047-460b-bff1-9fd97263e855

@@ -51,5 +51,5 @@ You will need the latest Python version available, preferably 3.10 which this bo
 # Gallery
 
 Desktop GUI:
-
+![Demo Video](https://raw.githubusercontent.com/Wucinni/Selfie-Booth/development/demo.mp4)
 ![](README_Assets/demo.mp4)

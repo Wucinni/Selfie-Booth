@@ -52,4 +52,4 @@ You will need the latest Python version available, preferably 3.10 which this bo
 
 Desktop GUI:
 
-<video src='https://drive.google.com/file/d/1DgZRzCQ_aikKH-hRaW4CVqG0INaudM4A/view?usp=sharing' width=180/>
+https://drive.google.com/file/d/1DgZRzCQ_aikKH-hRaW4CVqG0INaudM4A/view?usp=sharing

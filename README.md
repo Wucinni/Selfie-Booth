@@ -35,13 +35,17 @@ You will need the latest Python version available, preferably 3.10 which this bo
 
 - Video display is set by default to the user Desktop.
 - In case the application fails to display the video: select again the directory using the top left menu and reopen the application
+- 
 :warning: Application works only with '.mp4', '.avi', '.mkv' files.
 
 ## Flask Server
 - By default Flask Server will run on LAN using the IPv4 Address.
 - Standard port is set to flask default(5000).
+  
 :warning: If flask server fails to run you can manually change the IP and Port by using the top left menu.
+
 :warning: If you modified the running port, you have to run again the batch file ('allow_site_through_firewall.cmd') in order to open the newly chosen port through firewall.
+
 :warning: In order to access the webside worldwide you have to do port forwarding in router settings.
 
 # Gallery

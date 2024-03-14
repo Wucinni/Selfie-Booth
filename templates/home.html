@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+    <!-- Head -->
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>360 Gallery</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+    </head>
+
+    <!-- Body -->
+    <body>
+        <!-- Navigation Buttons used to get to Next or Last Video and Download -->
+        <div style="display: flex; justify-content: center; align-items: center;height: 10vh;">
+            <button type="button" class="btn btn-info" onclick="window.location.href='{{ url_for('video', index=index, command='last') }}'" style="margin-left: 10px;">Last</button>
+            <a href="{{ url_for('return_video', index=index) }}" download> <button type="button" class="btn btn-info" style="margin: 0 10px;">Download</button> </a>
+            <button type="button" class="btn btn-info" onclick="window.location.href='{{ url_for('video', index=index, command='next') }}'" style="margin-left: 10px;">Next</button>
+        </div>
+
+        <!-- Div where Video Playback is Done -->
+        <div class="video-container" style="display: flex; justify-content: center; align-items: center; height: 90vh;">
+            <video id="video-player" controls="controls" preload="metadata" loop autoplay style="max-width: 100%; max-height: 100%;">
+                <source src="{{ url_for('return_video', index=index) }}" type="video/mp4">
+            </video>
+        </div>
+    </body>
+</html>

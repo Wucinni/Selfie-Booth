@@ -67,8 +67,8 @@ def set_default_settings():
     try:
         file = open(path + "\\settings.txt", "x")
         file.write(f"video_directory:C:\\Users\\{get_user()}\\Desktop\n")
-        file.write("wifi_ssid:\n")
-        file.write("wifi_password:\n")
+        file.write("wifi_ssid:wifi\n")
+        file.write("wifi_password:password\n")
         file.write(f"server_ip:{str(get_wlan_ip())}\n")
         file.write("server_port:5000\n")
         file.close()

@@ -1,6 +1,6 @@
 ![](README_Assets/selfie_booth_logo.png)
 
-Desktop application and web server for 360 selfie videos gallery and download.
+Desktop application and web server for 360 selfie videos with gallery and download.
 
 This application:
 1. Can display videos with sound.

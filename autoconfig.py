@@ -1,7 +1,7 @@
-import sys
 import subprocess
+import sys
 
-module_list = ["tk", "imageio[ffmpeg]", "pillow", "thread6", "keyboard", "numpy", "moviepy", "flask", "qrcode", "wifi_qrcode_generator"]
+module_list = ["flask", "imageio[ffmpeg]", "keyboard", "moviepy", "numpy", "pillow", "qrcode", "thread6", "tk", "wifi_qrcode_generator"]
 
 for module in module_list:
     try:

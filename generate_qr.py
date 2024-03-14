@@ -1,7 +1,15 @@
-from PIL import Image, ImageDraw, ImageFont
-import wifi_qrcode_generator.generator
-import qrcode
+#############################################
+#                                           #
+#       This script calculates QRs and      #
+#           create their images             #
+#                                           #
+#############################################
+
+
 import os
+from PIL import Image
+import qrcode
+import wifi_qrcode_generator.generator
 
 
 filename = os.path.basename(__file__)
@@ -9,6 +17,14 @@ path = os.path.abspath(__file__)
 
 
 def set_qr_background(qr_code_image, modified_qr_code_image, background):
+    """
+        This function combines a default QR and a modified QR to create one with background
+        input - qr_code_image: Type Pillow Image
+              - modified_qr_code_image: Type Pillow Image
+              - path to background: Type STR
+        output - QR; Type Pillow Image
+    """
+
     # Load background image and resize to fit QR
     background = Image.open(background)
     qr_code_size = modified_qr_code_image.size
@@ -47,7 +63,16 @@ def set_qr_background(qr_code_image, modified_qr_code_image, background):
 
     return modified_qr_code_image
 
+
 def qr(ssid=None, password=None, text=None):
+    """
+        Function creates a QR Image based on text
+        input - Wi-Fi ssid: Type STR
+              - Wi-fi password: Type STR
+              - plain text: Type STR
+        output - QR; Type Pillow Image
+    """
+    # If text exists create a standard QR and set background to appropriate image
     if text:
         background = path[:len(path) - len(filename)] + "templates\\background_qr_right.png"
         qr_code = qrcode.QRCode(
@@ -59,6 +84,8 @@ def qr(ssid=None, password=None, text=None):
 
         qr_code.add_data(text)
         qr_code.make(fit=True)
+
+    # If ssid exists create a Wi-Fi QR and set background to appropriate image
     elif ssid:
         background = path[:len(path) - len(filename)] + "templates\\background_qr_left.png"
         if password:

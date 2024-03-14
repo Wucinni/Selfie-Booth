@@ -56,4 +56,4 @@ https://github.com/Wucinni/Selfie-Booth/assets/57183275/ef9b0c01-f095-4e05-a8fd-
 
 Mobile Interface:
 
-
+https://github.com/Wucinni/Selfie-Booth/assets/57183275/b7c8b063-413a-4eeb-be54-603cc1ceb5a1

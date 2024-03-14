@@ -51,5 +51,5 @@ You will need the latest Python version available, preferably 3.10 which this bo
 # Gallery
 
 Desktop GUI:
+
 https://raw.githubusercontent.com/Wucinni/Selfie-Booth/development/README_Assets/demo.mp4
-![](README_Assets/demo.mp4)

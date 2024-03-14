@@ -52,4 +52,6 @@ You will need the latest Python version available, preferably 3.10 which this bo
 
 Desktop GUI:
 
-<video src="https://github.com/Wucinni/Selfie-Booth/assets/demo.mp4" width="300" />
+<video src="https://raw.githubusercontent.com/Wucinni/Selfie-Booth/development/.github/images/demo.mp4" width="300" />
+
+https://raw.githubusercontent.com/Wucinni/Selfie-Booth/development}/.github/images/demo.mp4

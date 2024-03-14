@@ -39,6 +39,7 @@ You will need the latest Python version available, preferably 3.10 which this bo
 :warning: Application works only with '.mp4', '.avi', '.mkv' files.
 
 ## Flask Server
+
 - By default Flask Server will run on LAN using the IPv4 Address.
 - Standard port is set to flask default(5000).
   
@@ -47,6 +48,10 @@ You will need the latest Python version available, preferably 3.10 which this bo
 :warning: If you modified the running port, you have to run again the batch file ('allow_site_through_firewall.cmd') in order to open the newly chosen port through firewall.
 
 :warning: In order to access the webside worldwide you have to do port forwarding in router settings.
+
+## Fullscreen
+
+Make Desktop GUI Fulscreen by pressing F12. If necessary to change: modify line 49 in selfiebooth_app.py
 
 # Gallery
 

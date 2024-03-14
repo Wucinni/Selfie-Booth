@@ -55,3 +55,10 @@ Desktop GUI:
 <video src="https://raw.githubusercontent.com/Wucinni/Selfie-Booth/development/.github/images/demo.mp4" width="300" />
 
 https://raw.githubusercontent.com/Wucinni/Selfie-Booth/development}/.github/images/demo.mp4
+
+
+
+https://github.com/Wucinni/Selfie-Booth/assets/57183275/4b29cfc5-4047-460b-bff1-9fd97263e855
+
+
+

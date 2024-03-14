@@ -53,3 +53,5 @@ You will need the latest Python version available, preferably 3.10 which this bo
 Desktop GUI:
 
 https://drive.google.com/file/d/1DgZRzCQ_aikKH-hRaW4CVqG0INaudM4A/view?usp=sharing
+
+<video src="https://github.com/rayytsn9/ROBOTT/assets/79029536/62f541aa-aa8c-43f5-9ead-4b7a2e0d7c2a" width="300" />

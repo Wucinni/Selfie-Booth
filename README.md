@@ -53,6 +53,10 @@ You will need the latest Python version available, preferably 3.10 which this bo
 
 Make Desktop GUI Fulscreen by pressing F12. If necessary to change: modify line 56 in selfiebooth_app.py
 
+## Roadmap
+- Solve bug when application will crash on changing video directory while audio is on
+- Implement WiFi SSID and Password detection and save for current network
+
 # Gallery
 
 Desktop GUI:

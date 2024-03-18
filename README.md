@@ -11,7 +11,7 @@ This application:
 
 ## Installation
 
-You will need the latest Python version available, preferably 3.10 which this bot was created in.
+You will need the latest Python version available, preferably 3.10 which this project was created in.
 
 <details><summary>Instructions</summary>
    

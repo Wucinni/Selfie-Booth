@@ -46,7 +46,7 @@ You will need the latest Python version available, preferably 3.10 which this pr
 
 :warning: If you modified the running port, you have to run again the batch file ('allow_site_through_firewall.cmd') in order to open the newly chosen port through firewall. Do not forget to replace port number with newly chosen port.
 
-:warning: In order to access the webside worldwide you have to do port forwarding in router settings.
+:warning: In order to access the website worldwide you have to do port forwarding in router settings.
 
 ## Fullscreen
 

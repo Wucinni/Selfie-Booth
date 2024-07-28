@@ -12,8 +12,8 @@ from flask import Flask, send_from_directory, render_template, request
 import os
 import settings
 
-
 app = Flask(__name__, static_folder='templates')
+
 settings.set_default_settings()  # Write default settings to settings file in AppData
 path = settings.get_settings("video_directory:")  # Get video directory from settings file
 video_files = []
@@ -92,6 +92,24 @@ def video():
     return render_template('home.html', index=0)
 
 
+@app.route('/<filename>')
+def get_specific_video(filename):
+    # Ensure the file exists in the video directory
+    file_path = os.path.join(path, filename)
+    if not os.path.isfile(file_path):
+        return "Video file not found.", 404
+
+    index = 0
+    for position, video in enumerate(video_files):
+        if filename == video:
+            index = position
+
+    print(index)
+
+    # Render the template with the specific video file
+    return render_template('home.html', video_file=filename, index=index)
+
+
 @app.route('/upload/', methods=['GET', 'POST'])
 def upload_file():
     # Upload file on POST
@@ -134,8 +152,11 @@ def run():
         input - None
         output - None
     """
+    # app = Flask(__name__, static_folder='templates')
+
     # Write default settings to settings file in case ip is missing
     settings.set_default_settings()
 
     # Start Flask server
-    app.run(host=settings.get_settings("server_ip:"), port=int(settings.get_settings("server_port:")), debug=False)
+    app.run(host=settings.get_settings("server_ip:"), port=int(settings.get_settings("server_port:")), debug=False,
+            threaded=True)

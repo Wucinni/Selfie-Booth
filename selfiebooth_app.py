@@ -307,7 +307,7 @@ server_menu.add_command(label="Save IP", command=set_local_ip)
 server_menu.add_command(label="Save Port", command=set_port)
 menu.add_command(label="Video Directory", command=set_videos_location)
 menu.add_command(label="Wifi", command=set_wifi_credentials)
-menu.add_command(label=f"Audio: {audio_state}", command=change_audio_state)
+# menu.add_command(label=f"Audio: {audio_state}", command=change_audio_state)
 
 # Place main menu into Tkinter main window
 root.config(menu=menubar)
@@ -337,14 +337,14 @@ right_container.config(image=right_qr)
 
 
 # Threads
-play_video_thread = Thread(target=play_video)
-play_video_thread.daemon = 1
-play_video_thread.start()
+# play_video_thread = Thread(target=play_video)
+# play_video_thread.daemon = 1
+# play_video_thread.start()
 
-fullscreen_thread = Thread(target=set_fullscreen_variable)
-fullscreen_thread.daemon = 1
-fullscreen_thread.start()
+# fullscreen_thread = Thread(target=set_fullscreen_variable)
+# fullscreen_thread.daemon = 1
+# fullscreen_thread.start()
 
-make_window_fullscreen()
+# make_window_fullscreen()
 
 root.mainloop()

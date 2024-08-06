@@ -1,0 +1,44 @@
+1. Apache Server
+ - Download and extract Apache (currently 2.4) to your main disk, for example C:/
+
+2. mod_wsgi
+ - download mod_wsgi.so and place it into Apache/modules or simply install it with pip: "pip install mod_wsgi"
+
+3. Configure Apache
+ - type mod_wsgi-express module-config command into cmd to get configuration routes
+ - add the output of "mod_wsgi-express module-config" at the end of the httpd.conf file in Apache/conf/httpd.conf
+ - add the external flask server configuration file at the end of the httpd.conf file in Apache/conf/httpd.conf, for example "Include conf/flask_server.conf" or "Include conf/your_configuration_file.conf"
+ - create global server name: add "ServerName IPv4-Address" to the Apache/conf/httpd.conf, for example add the line "ServerName 192.168.1.200" at the end of the file httpd.conf
+
+4. Add project configuration files to Apache and create a virtual host
+
+<VirtualHost *:80>
+    ServerName 192.168.1.200
+    WSGIScriptAlias / "C:/Users/User/Desktop/Selfie-Booth-main/flask_server.wsgi"
+
+    <Directory "C:/Users/User/Desktop/Selfie-Booth-main">
+        WSGIApplicationGroup %{GLOBAL}
+        Require all granted
+    </Directory>
+
+    Alias /static "C:/Users/User/Desktop/Selfie-Booth-main/templates"
+    <Directory "C:/Users/User/Desktop/Selfie-Booth-main/templates">
+        Require all granted
+    </Directory>
+</VirtualHost>
+
+Replace directories' path with your own
+
+5. Create wsgi file into project
+
+import sys
+import os
+
+# Add your application directory to the Python path
+sys.path.insert(0, os.path.dirname(__file__))
+
+from flask_server import app as application  # Import your Flask app
+
+# This allows Apache to serve your application
+if __name__ == "__main__":
+    application.run()

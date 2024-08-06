@@ -6,9 +6,11 @@
 #############################################
 
 
+import io
 import os
 from PIL import Image
 import qrcode
+from rembg import remove
 import wifi_qrcode_generator.generator
 
 
@@ -64,7 +66,44 @@ def set_qr_background(qr_code_image, modified_qr_code_image, background):
     return modified_qr_code_image
 
 
-def qr(ssid=None, password=None, text=None):
+def remove_white_pixels(image):
+    """
+        Remove white pixels from the image and make them transparent.
+        """
+    # Ensure the image is in RGBA mode to handle transparency
+    if image.mode != 'RGBA':
+        image = image.convert('RGBA')
+
+    # Get image data
+    data = image.getdata()
+
+    # Create new data with white pixels replaced by transparent
+    new_data = []
+    for item in data:
+        # Check if the pixel is white
+        if item[0] > 200 and item[1] > 200 and item[2] > 200:
+            new_data.append((255, 255, 255, 0))  # Replace white with transparent
+        else:
+            new_data.append(item)
+
+    # Update image with new data
+    image.putdata(new_data)
+    return image
+
+
+def generate_unique_name(desktop_path=os.path.join(os.path.expanduser("~"), "Desktop"), base_filename="QR.png"):
+    base, ext = os.path.splitext(base_filename)
+    counter = 1
+    unique_filename = base_filename
+
+    while os.path.exists(os.path.join(desktop_path, unique_filename)):
+        unique_filename = f"{base}({counter}){ext}"
+        counter += 1
+
+    return desktop_path+"\\"+unique_filename
+
+
+def qr(background_image=None, transparency_value=None, text=None, wifi_ssid=None, wifi_password=None):
     """
         Function creates a QR Image based on text
         input - Wi-Fi ssid: Type STR
@@ -74,7 +113,6 @@ def qr(ssid=None, password=None, text=None):
     """
     # If text exists create a standard QR and set background to appropriate image
     if text:
-        background = path[:len(path) - len(filename)] + "templates\\background_qr_right.png"
         qr_code = qrcode.QRCode(
             version=None,
             error_correction=qrcode.constants.ERROR_CORRECT_L,
@@ -86,15 +124,21 @@ def qr(ssid=None, password=None, text=None):
         qr_code.make(fit=True)
 
     # If ssid exists create a Wi-Fi QR and set background to appropriate image
-    elif ssid:
-        background = path[:len(path) - len(filename)] + "templates\\background_qr_left.png"
-        if password:
+    elif wifi_ssid:
+        if wifi_password:
             qr_code = wifi_qrcode_generator.generator.wifi_qrcode(
-                ssid=ssid, hidden=False, authentication_type='WPA', password=password
+                ssid=wifi_ssid, hidden=False, authentication_type='WPA', password=wifi_password
             )
         else:
             qr_code = wifi_qrcode_generator.generator.wifi_qrcode(
-                ssid=ssid, hidden=False, authentication_type='nopass', password=None
+                ssid=wifi_ssid, hidden=False, authentication_type='nopass', password=None
             )
 
-    return set_qr_background(qr_code.make_image(fill_color="black", back_color="white"), qr_code.make_image(fill_color="white", back_color="black"), background)
+    if background_image:
+        set_qr_background(qr_code.make_image(fill_color="black", back_color="white"),
+                          qr_code.make_image(fill_color="white", back_color="black"),
+                          background_image).save(generate_unique_name())
+    elif transparency_value:
+        remove_white_pixels(qr_code.make_image(fill_color="black", back_color="white")).save(generate_unique_name())
+    else:
+        qr_code.make_image(fill_color="black", back_color="white").save(generate_unique_name())

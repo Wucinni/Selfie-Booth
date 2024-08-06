@@ -309,6 +309,107 @@ def set_wifi_credentials():
     save_button.pack()
 
 
+def create_qr():
+    def on_selection_normal_qr_checkbox():
+        if normal_qr_checkbox_value.get():  # If the first checkbox is selected
+            wifi_qr_checkbox_value.set(False)
+
+            wifi_ssid_entry.delete(0, tk.END)
+            wifi_password_entry.delete(0, tk.END)
+
+            wifi_ssid_entry.config(state=tk.DISABLED)
+            wifi_password_entry.config(state=tk.DISABLED)
+            normal_text_entry.config(state=tk.NORMAL)
+        else:
+            normal_text_entry.config(state=tk.DISABLED)
+
+
+    def on_selection_wifi_qr_checkbox():
+        if wifi_qr_checkbox_value.get():  # If the second checkbox is selected
+            normal_qr_checkbox_value.set(False)
+
+            normal_text_entry.delete(0, tk.END)
+
+            normal_text_entry.config(state=tk.DISABLED)
+            wifi_ssid_entry.config(state=tk.NORMAL)
+            wifi_password_entry.config(state=tk.NORMAL)
+        else:
+            wifi_ssid_entry.config(state=tk.DISABLED)
+            wifi_password_entry.config(state=tk.DISABLED)
+
+
+    def add_background():
+        nonlocal background_image_path
+
+        if add_background_checkbox_value.get():  # If checkbox is selected
+            background_image_path = filedialog.askopenfilename(
+                title="Select an image",
+                filetypes=[("PNG files", "*.png"), ("JPEG files", "*.jpeg"), ("JPG files", "*.jpg"), ("All files", "*.*")]
+            )
+            add_background_checkbox.config(text=background_image_path)
+
+            enable_transparency_checkbox_value.set(False)
+
+
+    def enable_transparency():
+        if enable_transparency_checkbox_value.get():
+            enable_transparency_checkbox_value.set(True)
+            add_background_checkbox_value.set(False)
+
+
+    def create_qr_request():
+        if normal_qr_checkbox_value.get():
+            generate_qr.qr(background_image_path, enable_transparency_checkbox_value.get(),
+                        text = normal_text_entry.get(), )
+        elif wifi_qr_checkbox_value.get():
+            generate_qr.qr(background_image_path, enable_transparency_checkbox_value.get(),
+                        wifi_ssid = wifi_ssid_entry.get(), wifi_password = wifi_password_entry.get())
+
+        qr_window.destroy()
+
+    # Create a new window
+    qr_window = tk.Toplevel(root)
+    qr_window.title("QR Creation")
+    qr_window.geometry("320x200")
+    qr_window.resizable(False, False)
+
+    # Create a variable to store the state of the checkbox
+    normal_qr_checkbox_value = tk.BooleanVar(value=True)
+    wifi_qr_checkbox_value = tk.BooleanVar(value=False)
+    add_background_checkbox_value = tk.BooleanVar(value=False)
+    enable_transparency_checkbox_value = tk.BooleanVar(value=False)
+
+    background_image_path = None
+
+    # Create and pack the first entry (enabled by default)
+    normal_text_entry = ttk.Entry(qr_window)
+    normal_text_entry.place(x=25, y=40)
+
+    # Create and pack the second and third entries (disabled by default)
+    wifi_ssid_entry = ttk.Entry(qr_window, state=tk.DISABLED)
+    wifi_ssid_entry.place(x=170, y=40)
+
+    wifi_password_entry = ttk.Entry(qr_window, state=tk.DISABLED)
+    wifi_password_entry.place(x=170, y=70)
+
+    # Create and pack the checkboxes
+    normal_qr_checkbox = ttk.Checkbutton(qr_window, text="Normal QR", variable=normal_qr_checkbox_value, command=on_selection_normal_qr_checkbox)
+    normal_qr_checkbox.place(x=50, y=10)
+
+    wifi_qr_checkbox = ttk.Checkbutton(qr_window, text="Wifi QR", variable=wifi_qr_checkbox_value, command=on_selection_wifi_qr_checkbox)
+    wifi_qr_checkbox.place(x=195, y=10)
+
+    add_background_checkbox = ttk.Checkbutton(qr_window, text="Add Background", variable=add_background_checkbox_value, command=add_background)
+    add_background_checkbox.place(x=25, y=100)
+
+    enable_transparency_checkbox = ttk.Checkbutton(qr_window, text="Enable Transparency", variable=enable_transparency_checkbox_value, command=enable_transparency)
+    enable_transparency_checkbox.place(x=25, y=130)
+
+    # Create a button to save the text from the entries and create the QR
+    save_button = ttk.Button(qr_window, text="Create QR", command=create_qr_request)
+    save_button.place(x=185, y=120)
+
+
 # Create settings file if it's first time application was started on this machine
 settings.set_default_settings()
 
@@ -410,7 +511,7 @@ save_wifi_credentials_button.place(x=25, y=150)
 save_video_location_button = tk.Button(root, text="Change Video Directory", command=set_videos_location)
 save_video_location_button.place(x=25, y=190)
 
-create_qr_button = tk.Button(root, text="Create QR")
+create_qr_button = tk.Button(root, text="Create QR", command=create_qr)
 create_qr_button.place(x=25, y=250)
 
 quit_button = tk.Button(root, text="Quit", command=destroy_application)

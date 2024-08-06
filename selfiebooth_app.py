@@ -184,6 +184,11 @@ def save_input_to_settings_file(message, input_box, data):
     input_box.destroy()
     messagebox.showinfo(title="Confirmation Box", message=message)
 
+    server_port_label.config(text=settings.get_settings("server_port:"))
+    server_ip_label.config(text=settings.get_settings("server_ip:"))
+    wifi_name_label.config(text="Name:" + str(settings.get_settings("wifi_ssid:")))
+    wifi_password_label.config(text="Password:" + str(settings.get_settings("wifi_password:")))
+
 
 def set_local_ip():
     """
@@ -201,6 +206,7 @@ def set_local_ip():
     save_button = tk.Button(ip_input_box, text="Save",
                             command=lambda: save_input_to_settings_file("IP saved", ip_input_box,
                                                                         {"server_ip:": ip_ssid.get()}))
+
     # Place Widgets automatically with pack function
     ip_label.pack()
     ip_ssid.pack()
@@ -223,6 +229,7 @@ def set_port():
     save_button = tk.Button(port_input_box, text="Save",
                             command=lambda: save_input_to_settings_file("Port saved", port_input_box,
                                                                         {"server_port:": port_ssid.get()}))
+
     # Place Widgets automatically with pack function
     port_label.pack()
     port_ssid.pack()
@@ -245,10 +252,12 @@ def set_videos_location():
         settings.write_settings({"video_directory:": videos_directory})
 
     # If play video Thread is not active create and start it
-    if not play_video_thread.is_alive():
-        play_video_thread = Thread(target=play_video)
-        play_video_thread.daemon = 1
-        play_video_thread.start()
+    # if not play_video_thread.is_alive():
+    #     play_video_thread = Thread(target=play_video)
+    #     play_video_thread.daemon = 1
+    #     play_video_thread.start()
+
+    video_directory_label.config(text=settings.get_settings("video_directory:"))
 
     # Change flag to indicate video location has changed
     changed_video_location_status = True
@@ -273,6 +282,7 @@ def set_wifi_credentials():
                             command=lambda: save_input_to_settings_file("Wifi credentials saved", wifi_input_box,
                                                                         {"wifi_ssid:": ssid.get(),
                                                                          "wifi_password:": password.get()}))
+
     # Place Widgets automatically with pack function
     ssid_label.pack()
     ssid.pack()
@@ -287,30 +297,36 @@ settings.set_default_settings()
 # Main window Characteristics
 root = tk.Tk()
 root.title("360 Gallery")
-root.geometry("600x599")
+root.geometry("475x375")
+
 window_width = root.winfo_width()
 window_height = root.winfo_height()
 
+# Create a style for main widget
+style = ttk.Style(root)
+# Set the theme with the theme_use method
+style.theme_use('vista')
+
 
 # Menu Objects
-menubar = Menu(root)
-menu = Menu(menubar, tearoff=0)
-server_menu = Menu(menu, tearoff=0)
+# menubar = Menu(root)
+# menu = Menu(menubar, tearoff=0)
+# server_menu = Menu(menu, tearoff=0)
 
 # Create droplists for submenus
-menubar.add_cascade(label="Menu", menu=menu)
-menu.add_cascade(label="Server", menu=server_menu)
+# menubar.add_cascade(label="Menu", menu=menu)
+# menu.add_cascade(label="Server", menu=server_menu)
 
 # Create commands for menus buttons
-server_menu.add_command(label="Start Server", command=start_server_thread)
-server_menu.add_command(label="Save IP", command=set_local_ip)
-server_menu.add_command(label="Save Port", command=set_port)
-menu.add_command(label="Video Directory", command=set_videos_location)
-menu.add_command(label="Wifi", command=set_wifi_credentials)
+# server_menu.add_command(label="Start Server", command=start_server_thread)
+# server_menu.add_command(label="Save IP", command=set_local_ip)
+# server_menu.add_command(label="Save Port", command=set_port)
+# menu.add_command(label="Video Directory", command=set_videos_location)
+# menu.add_command(label="Wifi", command=set_wifi_credentials)
 # menu.add_command(label=f"Audio: {audio_state}", command=change_audio_state)
 
 # Place main menu into Tkinter main window
-root.config(menu=menubar)
+# root.config(menu=menubar)
 
 
 # Create background image, set it to a Tkinter label and tie label to main window
@@ -322,18 +338,18 @@ background_label.place(x=0, y=0, relwidth=1, relheight=1)
 
 
 # Create containers for QRs and video and place them onto Tkinter window
-left_container = ttk.Label(root)
-left_container.pack(side="left", expand=True,  padx=10)
-middle_container = ttk.Label(root)
-middle_container.pack(side="left", expand=True, padx=10)
-right_container = ttk.Label(root)
-right_container.pack(side="left", expand=True,  padx=10)
+# left_container = ttk.Label(root)
+# left_container.pack(side="left", expand=True,  padx=10)
+# middle_container = ttk.Label(root)
+# middle_container.pack(side="left", expand=True, padx=10)
+# right_container = ttk.Label(root)
+# right_container.pack(side="left", expand=True,  padx=10)
 
 # Create QR Images and tie them to their container
-left_qr = ImageTk.PhotoImage(generate_qr.qr(ssid=settings.get_settings("wifi_ssid:"), password=settings.get_settings("wifi_password:")))
-left_container.config(image=left_qr)
-right_qr = ImageTk.PhotoImage(generate_qr.qr(text=f"http://{settings.get_settings('server_ip:')}:{settings.get_settings('server_port:')}"))
-right_container.config(image=right_qr)
+# left_qr = ImageTk.PhotoImage(generate_qr.qr(ssid=settings.get_settings("wifi_ssid:"), password=settings.get_settings("wifi_password:")))
+# left_container.config(image=left_qr)
+# right_qr = ImageTk.PhotoImage(generate_qr.qr(text=f"http://{settings.get_settings('server_ip:')}:{settings.get_settings('server_port:')}"))
+# right_container.config(image=right_qr)
 
 
 # Threads
@@ -347,4 +363,54 @@ right_container.config(image=right_qr)
 
 # make_window_fullscreen()
 
+
+# Create commands for menus buttons
+# server_menu.add_command(label="Start Server", command=start_server_thread)
+# server_menu.add_command(label="Save IP", command=set_local_ip)
+# server_menu.add_command(label="Save Port", command=set_port)
+# menu.add_command(label="Video Directory", command=set_videos_location)
+# menu.add_command(label="Wifi", command=set_wifi_credentials)
+# menu.add_command(label=f"Audio: {audio_state}", command=change_audio_state)
+
+
+# Create buttons to replace menu entries
+start_server_button = tk.Button(root, text="Start Server", command=start_server_thread)
+start_server_button.place(x=25, y=30)
+
+save_ip_button = tk.Button(root, text="Save IP", command=set_local_ip)
+save_ip_button.place(x=25, y=60)
+
+save_port_button = tk.Button(root, text="Save Port", command=set_port)
+save_port_button.place(x=25, y=90)
+
+save_wifi_credentials_button = tk.Button(root, text="Change Wifi Crenetials", command=set_wifi_credentials)
+save_wifi_credentials_button.place(x=25, y=150)
+
+save_video_location_button = tk.Button(root, text="Change Video Directory", command=set_videos_location)
+save_video_location_button.place(x=25, y=190)
+
+create_qr_button = tk.Button(root, text="Create QR")
+create_qr_button.place(x=25, y=250)
+
+quit_button = tk.Button(root, text="Quit", command=root.destroy)
+quit_button.place(x=430, y=325)
+
+
+# Create labels for each of the button entry
+server_ip_label = ttk.Label(root, text=settings.get_settings("server_ip:"))
+server_ip_label.place(x=180, y=65)
+
+server_port_label = ttk.Label(root, text=settings.get_settings("server_port:"))
+server_port_label.place(x=180, y=95)
+
+wifi_name_label = ttk.Label(root, text="Name:" + str(settings.get_settings("wifi_ssid:")))
+wifi_name_label.place(x=180, y=145)
+
+wifi_password_label = ttk.Label(root, text="Password:" + str(settings.get_settings("wifi_ssid:")))
+wifi_password_label.place(x=180, y=165)
+
+video_directory_label = ttk.Label(root, text=settings.get_settings("video_directory:"))
+video_directory_label.place(x=180, y=195)
+
+root.resizable(False, False)
 root.mainloop()

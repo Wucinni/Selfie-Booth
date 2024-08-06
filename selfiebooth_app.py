@@ -20,7 +20,9 @@ import numpy as np
 import os
 from PIL import ImageTk
 import PIL.Image
+import psutil
 import settings
+import signal
 from threading import Thread
 import time
 import tkinter as tk
@@ -170,6 +172,15 @@ def start_server_thread():
     server_thread.start()
 
     messagebox.showinfo(title="Confirmation Box", message="Server was started")
+
+
+def start_apache_server():
+    os.startfile("C:\Apache24\\bin\httpd.exe")
+
+
+def stop_apache_server():
+    for pid in (process.pid for process in psutil.process_iter() if process.name() == "httpd.exe"):
+        os.kill(pid, signal.SIGTERM)
 
 
 def save_input_to_settings_file(message, input_box, data):
@@ -374,8 +385,11 @@ background_label.place(x=0, y=0, relwidth=1, relheight=1)
 
 
 # Create buttons to replace menu entries
-start_server_button = tk.Button(root, text="Start Server", command=start_server_thread)
+start_server_button = tk.Button(root, text="Start Server", command=start_apache_server)
 start_server_button.place(x=25, y=30)
+
+stop_server_button = tk.Button(root, text="Stop Server", command=stop_apache_server)
+stop_server_button.place(x=100, y=30)
 
 save_ip_button = tk.Button(root, text="Save IP", command=set_local_ip)
 save_ip_button.place(x=25, y=60)

@@ -274,6 +274,13 @@ def set_videos_location():
     changed_video_location_status = True
 
 
+def destroy_application():
+    for pid in (process.pid for process in psutil.process_iter() if process.name() == "httpd.exe"):
+        os.kill(pid, signal.SIGTERM)
+
+    root.destroy()
+
+
 def set_wifi_credentials():
     """
         Function saves user input and sends it to settings file
@@ -397,7 +404,7 @@ save_ip_button.place(x=25, y=60)
 save_port_button = tk.Button(root, text="Save Port", command=set_port)
 save_port_button.place(x=25, y=90)
 
-save_wifi_credentials_button = tk.Button(root, text="Change Wifi Crenetials", command=set_wifi_credentials)
+save_wifi_credentials_button = tk.Button(root, text="Change Wifi Credentials", command=set_wifi_credentials)
 save_wifi_credentials_button.place(x=25, y=150)
 
 save_video_location_button = tk.Button(root, text="Change Video Directory", command=set_videos_location)
@@ -406,7 +413,7 @@ save_video_location_button.place(x=25, y=190)
 create_qr_button = tk.Button(root, text="Create QR")
 create_qr_button.place(x=25, y=250)
 
-quit_button = tk.Button(root, text="Quit", command=root.destroy)
+quit_button = tk.Button(root, text="Quit", command=destroy_application)
 quit_button.place(x=430, y=325)
 
 
@@ -420,11 +427,12 @@ server_port_label.place(x=180, y=95)
 wifi_name_label = ttk.Label(root, text="Name:" + str(settings.get_settings("wifi_ssid:")))
 wifi_name_label.place(x=180, y=145)
 
-wifi_password_label = ttk.Label(root, text="Password:" + str(settings.get_settings("wifi_ssid:")))
+wifi_password_label = ttk.Label(root, text="Password:" + str(settings.get_settings("wifi_password:")))
 wifi_password_label.place(x=180, y=165)
 
 video_directory_label = ttk.Label(root, text=settings.get_settings("video_directory:"))
 video_directory_label.place(x=180, y=195)
 
 root.resizable(False, False)
+root.protocol("WM_DELETE_WINDOW", destroy_application)
 root.mainloop()
